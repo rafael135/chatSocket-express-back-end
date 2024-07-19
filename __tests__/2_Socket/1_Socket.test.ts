@@ -70,6 +70,7 @@ describe("3 - Socket", () => {
         socket!.emit("test-connection");
 
         socket!.on("connection-established", ({ connected }: { connected: boolean }) => {
+            expect(connected).toBeTruthy();
             expect(connected).toBe(true);
         });
     });

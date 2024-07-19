@@ -153,7 +153,7 @@ class GroupController {
     @GET()
     @before(checkToken)
     public async isUserGroupAdmin(req: Request, res: Response) {
-        let authCookie = req.headers.auth_session as string;
+        let authCookie = req.cookies.auth_session as string;
 
         let loggedUser = await this._authService.getLoggedUser(authCookie);
 
@@ -165,7 +165,9 @@ class GroupController {
             });
         }
 
-        let { userUuid, groupUuid } = req.query as { userUuid: string | null, groupUuid: string | null };
+        let { userUuid, groupUuid } = req.params as { userUuid: string | null, groupUuid: string | null };
+
+        console.log(userUuid, groupUuid);
 
         let groupAdmin = await GroupAdmin.findOne({
             where: {
