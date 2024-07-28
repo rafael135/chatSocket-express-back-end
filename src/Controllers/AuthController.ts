@@ -264,7 +264,16 @@ class AuthController {
         let valid = false;
 
         try {
-            JWT.verify(token, process.env.JWT_KEY as string);
+            let decodedToken = JWT.verify(token, process.env.JWT_KEY as string) as decodedToken;
+
+            let userExists = await User.findOne({ where: { uuid: decodedToken.uuid } });
+
+            if(userExists == null) {
+                res.status(401);
+                return res.send({
+                    status: 401
+                });
+            }
 
             valid = true;
         }
