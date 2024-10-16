@@ -1,8 +1,5 @@
 import { Request, Response } from "express";
-import AuthController from "./AuthController";
-import { User, UserInstance } from "../Models/User";
-import { UserRelation, UserRelationInstance } from "../Models/UserRelation";
-import { Op, Sequelize } from "sequelize";
+import { User } from "../Models/User";
 import FriendService from "../Services/FriendService";
 import UserService from "../Services/UserService";
 import { GET, POST, PUT, before, route } from "awilix-express";

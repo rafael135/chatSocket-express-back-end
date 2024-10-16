@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { User, UserInstance } from "../Models/User";
+import { User } from "../Models/User";
 import FriendService from "./FriendService";
 
 

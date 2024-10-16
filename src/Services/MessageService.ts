@@ -1,8 +1,8 @@
 import { Op } from "sequelize";
-import { GroupMessage, GroupMessageInstance } from "../Models/GroupMessage";
+import { GroupMessage } from "../Models/GroupMessage";
 import { MessageImage, MessageImageInstance } from "../Models/MessageImage";
 import { User, UserInstance } from "../Models/User";
-import { UserMessage, UserMessageInstance } from "../Models/UserMessage";
+import UserMessage, { UserMessageInstance } from "../Models/UserMessage";
 import MessageImageService from "./MessageImageService";
 import { MessageImageType, MessageType, onUserGroupMsgType, onUserPrivateMsgType } from "./WebSocket";
 

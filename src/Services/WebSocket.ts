@@ -4,7 +4,6 @@ import { User, UserInstance } from "../Models/User";
 import MessageService from "./MessageService";
 import AuthService from "./AuthService";
 import TokenService from "./TokenService";
-import sequelize, { SequelizeScopeError } from "sequelize";
 
 type SocketDataType = {
     user: UserInstance;
@@ -165,6 +164,7 @@ class WebSocket {
         socket.emit("new_private_msg", msg);
     }
     
+    // Facade:
     public async InitializeSocket() {
         this.io.on("connection", async (socket) => {
             let user = await this.onConnect(socket);

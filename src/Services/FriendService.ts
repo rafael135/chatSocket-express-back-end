@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { User, UserInstance } from "../Models/User";
-import { UserRelation, UserRelationInstance } from "../Models/UserRelation";
+import UserRelation from "../Models/UserRelation";
 
 
 type UserFriend = {

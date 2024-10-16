@@ -4,7 +4,6 @@ import { Server } from "http";
 import socketIo from "socket.io";
 import cors from "cors";
 import dotenv from "dotenv";
-import routes from "./Routes/index";
 import WebSocket from "./Services/WebSocket";
 import compression from "compression";
 import cookieParser from "cookie-parser";
@@ -85,6 +84,7 @@ let tokenService = appContainer.resolve("tokenService") as TokenService;
 let authService = appContainer.resolve("authService") as AuthService;
 let messageService = appContainer.resolve("messageService") as MessageService;
 
+// Singleton:
 const Socket = new WebSocket(io, tokenService, authService, messageService);
 Socket.InitializeSocket();
 

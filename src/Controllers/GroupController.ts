@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
 import { User } from "../Models/User";
-import { GroupRelation, GroupRelationInstance } from "../Models/GroupRelation";
-import { Group, GroupInstance } from "../Models/Group";
 import GroupService from "../Services/GroupService";
-import AuthController from "./AuthController";
 import { DELETE, GET, POST, before, route } from "awilix-express";
 import checkToken from "../Middlewares/Auth";
 import AuthService from "../Services/AuthService";
@@ -146,6 +143,43 @@ class GroupController {
         return res.send({
             status: 200
         });
+    }
+
+
+    // Facade:
+    @route("/groups")
+    @DELETE()
+    @before(checkToken)
+    public async removeUserFromGroups(req: Request, res: Response) {
+        let { group_ids } = req.body as { group_ids: string[] | null };
+        
+        let authCookie = req.cookies.auth_session as string;
+
+        let loggedUser = await this._authService.getLoggedUser(authCookie);
+
+        if(loggedUser == null) {
+            res.status(403);
+            return res.send({
+                status: 403
+            });
+        }
+
+        if(group_ids == null || group_ids.length == 0) {
+            res.status(400);
+            return res.send({
+                status: 400
+            });
+        }
+
+        for(let i = 0; i < group_ids.length; i++) {
+            await this._groupService.removeMemberFromGroup(group_ids[i], loggedUser.uuid);
+        }
+
+        res.status(200);
+        return res.send({
+            status: 200
+        });
+
     }
 
 

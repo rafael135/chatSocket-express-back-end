@@ -1,5 +1,4 @@
 import { User, UserInstance } from "../Models/User";
-import JWT from "jsonwebtoken";
 import TokenService from "./TokenService";
 
 class AuthService {

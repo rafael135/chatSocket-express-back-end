@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { mariaDb as sequelize } from "../Instances/MariaDB";
-import { UserInstance } from "./User";
+import { User, UserInstance } from "./User";
 import { MessageImageType } from "../Services/WebSocket";
 
 
@@ -17,7 +17,7 @@ export interface UserMessageInstance extends Model {
     updatedAt: string;
 }
 
-export const UserMessage = sequelize.define<UserMessageInstance>("UserMessage", {
+const UserMessage = sequelize.define<UserMessageInstance>("UserMessage", {
     uuid: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -51,4 +51,17 @@ export const UserMessage = sequelize.define<UserMessageInstance>("UserMessage", 
     }
 }, {
     timestamps: true
+});
+
+
+UserMessage.belongsTo(User, {
+    foreignKey: "fromUserUuid",
+    targetKey: "id"
+});
+
+UserMessage.hasOne(User, {
+    foreignKey: "id",
+    sourceKey: "toUserUuid"
 })
+
+export default UserMessage;

@@ -1,11 +1,6 @@
 import { Request, Response } from "express";
-import AuthController from "./AuthController";
-import { GroupMessage, GroupMessageInstance } from "../Models/GroupMessage";
 import { User } from "../Models/User";
-import { UserMessage, UserMessageInstance } from "../Models/UserMessage";
-import { Op } from "sequelize";
-import { MessageImageType, MessageType } from "../Services/WebSocket";
-import { MessageImage, MessageImageInstance } from "../Models/MessageImage";
+import { MessageType } from "../Services/WebSocket";
 import MessageService from "../Services/MessageService";
 import TokenService from "../Services/TokenService";
 import { GET, route } from "awilix-express";

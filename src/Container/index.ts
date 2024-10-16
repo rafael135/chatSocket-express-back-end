@@ -8,6 +8,8 @@ import UserService from "../Services/UserService";
 import MessageImageService from "../Services/MessageImageService";
 import MessageService from "../Services/MessageService";
 import GroupService from "../Services/GroupService";
+import { ImageService } from "../Services/ImageService";
+import { StickService } from "../Services/StickService";
 
 
 /*
@@ -18,14 +20,17 @@ interface CustomContainer extends AwilixContainer {
 */
 
 
+// Abstract Factory:
 export const loadContainer = (server: Application) => {
     const Container = createContainer({
         injectionMode: "CLASSIC"
     });
 
     Container.register({
+        imageService: asClass(ImageService).scoped(),
         tokenService: asClass(TokenService).scoped(),
         authService: asClass(AuthService).scoped(),
+        stickService: asClass(StickService).scoped(),
         friendService: asClass(FriendService).scoped(),
         groupService: asClass(GroupService).scoped(),
         userService: asClass(UserService).scoped(),

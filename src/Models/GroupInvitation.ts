@@ -1,5 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { mariaDb as sequelize } from "../Instances/MariaDB";
+import { Group } from "./Group";
+import { User } from "./User";
 
 
 export interface GroupInvitationInstance extends Model {
@@ -29,3 +31,15 @@ export const GroupInvitation = sequelize.define<GroupInvitationInstance>("GroupI
     timestamps: true,
     tableName: "groupInvitations"
 });
+
+GroupInvitation.belongsTo(Group, {
+    foreignKey: "groupUuid",
+    targetKey: "uuid"
+});
+
+GroupInvitation.hasOne(User, {
+    foreignKey: "id",
+    sourceKey: "userUuid"
+});
+
+export default GroupInvitation;

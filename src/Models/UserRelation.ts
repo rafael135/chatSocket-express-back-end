@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { mariaDb as sequelize } from "../Instances/MariaDB";
-import { UserInstance } from "./User";
+import { User, UserInstance } from "./User";
 
 
 export interface UserRelationInstance extends Model {
@@ -12,7 +12,7 @@ export interface UserRelationInstance extends Model {
     updatedAt: string;
 }
 
-export const UserRelation = sequelize.define<UserRelationInstance>("UserRelation", {
+const UserRelation = sequelize.define<UserRelationInstance>("UserRelation", {
     uuid: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -30,3 +30,15 @@ export const UserRelation = sequelize.define<UserRelationInstance>("UserRelation
 }, {
     timestamps: true
 });
+
+
+UserRelation.belongsTo(User, {
+    foreignKey: "fromUserUuid"
+});
+
+UserRelation.hasOne(User, {
+    foreignKey: "id",
+    sourceKey: "toUserUuid"
+});
+
+export default UserRelation;

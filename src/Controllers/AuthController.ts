@@ -1,9 +1,7 @@
 import { Request, Response } from "express";
 import JWT from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import argon from "argon2";
 import { User, UserInstance } from "../Models/User";
-import AuthService from "../Services/AuthService";
 import TokenService from "../Services/TokenService";
 import { POST, route } from "awilix-express";
 
