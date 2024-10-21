@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { mariaDb as sequelize } from "../Instances/MariaDB";
-import { Group } from "./Group";
+import Group from "./Group";
 import { User } from "./User";
 
 

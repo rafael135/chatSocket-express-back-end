@@ -1,7 +1,8 @@
 import { DataTypes, Model } from "sequelize";
 import { mariaDb as sequelize } from "../Instances/MariaDB";
-import { UserInstance } from "./User";
+import { User, UserInstance } from "./User";
 import { MessageImageType } from "../Services/WebSocket";
+import Group from "./Group";
 
 export interface GroupMessageInstance extends Model {
     uuid: string;
@@ -16,7 +17,7 @@ export interface GroupMessageInstance extends Model {
     updatedAt: string;
 }
 
-export const GroupMessage = sequelize.define<GroupMessageInstance>("GroupMessage", {
+const GroupMessage = sequelize.define<GroupMessageInstance>("GroupMessage", {
     uuid: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -51,3 +52,13 @@ export const GroupMessage = sequelize.define<GroupMessageInstance>("GroupMessage
 }, {
     timestamps: true
 });
+
+GroupMessage.belongsTo(User, {
+    foreignKey: "fromUserUuid"
+});
+
+GroupMessage.belongsTo(Group, {
+    foreignKey: "toGroupUuid"
+});
+
+export default GroupMessage;

@@ -4,17 +4,20 @@ import GroupService from "../Services/GroupService";
 import { DELETE, GET, POST, before, route } from "awilix-express";
 import checkToken from "../Middlewares/Auth";
 import AuthService from "../Services/AuthService";
-import { GroupAdmin } from "../Models/GroupAdmin";
+import GroupAdmin from "../Models/GroupAdmin";
+import UserGroupFacade from "../Facades/UserGroupFacade";
 
 
 @route("/api/group")
 class GroupController {
     private readonly _authService: AuthService;
     private readonly _groupService: GroupService;
+    private readonly _userGroupFacade: UserGroupFacade;
 
-    constructor(authService: AuthService, groupService: GroupService) {
+    constructor(authService: AuthService, groupService: GroupService, userGroupFacade: UserGroupFacade) {
         this._authService = authService;
         this._groupService = groupService;
+        this._userGroupFacade = userGroupFacade;
     }
 
     @route("/:groupUuid/members")
@@ -147,7 +150,7 @@ class GroupController {
 
 
     // Facade:
-    @route("/groups")
+    @route("/")
     @DELETE()
     @before(checkToken)
     public async removeUserFromGroups(req: Request, res: Response) {
@@ -155,29 +158,11 @@ class GroupController {
         
         let authCookie = req.cookies.auth_session as string;
 
-        let loggedUser = await this._authService.getLoggedUser(authCookie);
+        let result = await this._userGroupFacade.removeUserFromGroup(authCookie, group_ids);
 
-        if(loggedUser == null) {
-            res.status(403);
-            return res.send({
-                status: 403
-            });
-        }
-
-        if(group_ids == null || group_ids.length == 0) {
-            res.status(400);
-            return res.send({
-                status: 400
-            });
-        }
-
-        for(let i = 0; i < group_ids.length; i++) {
-            await this._groupService.removeMemberFromGroup(group_ids[i], loggedUser.uuid);
-        }
-
-        res.status(200);
+        res.status(result.status);
         return res.send({
-            status: 200
+            status: result.status
         });
 
     }

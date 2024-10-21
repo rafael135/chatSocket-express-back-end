@@ -10,6 +10,7 @@ import MessageService from "../Services/MessageService";
 import GroupService from "../Services/GroupService";
 import { ImageService } from "../Services/ImageService";
 import { StickService } from "../Services/StickService";
+import UserGroupFacade from "../Facades/UserGroupFacade";
 
 
 /*
@@ -30,10 +31,11 @@ export const loadContainer = (server: Application) => {
         imageService: asClass(ImageService).scoped(),
         tokenService: asClass(TokenService).scoped(),
         authService: asClass(AuthService).scoped(),
-        stickService: asClass(StickService).scoped(),
         friendService: asClass(FriendService).scoped(),
         groupService: asClass(GroupService).scoped(),
         userService: asClass(UserService).scoped(),
+        userGroupFacade: asClass(UserGroupFacade).scoped(),
+        stickService: asClass(StickService).scoped(),
         messageImageService: asClass(MessageImageService).scoped(),
         messageService: asClass(MessageService).scoped()
     });

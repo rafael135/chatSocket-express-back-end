@@ -1,5 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { mariaDb as sequelize } from "../Instances/MariaDB";
+import Group from "./Group";
+import { User } from "./User";
 
 export interface GroupAdminInstance extends Model {
     uuid: string;
@@ -9,7 +11,7 @@ export interface GroupAdminInstance extends Model {
     updatedAt: string;
 };
 
-export const GroupAdmin = sequelize.define<GroupAdminInstance>("GroupAdmin", {
+const GroupAdmin = sequelize.define<GroupAdminInstance>("GroupAdmin", {
     uuid: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -27,3 +29,13 @@ export const GroupAdmin = sequelize.define<GroupAdminInstance>("GroupAdmin", {
 }, {
     timestamps: true
 });
+
+GroupAdmin.belongsTo(Group, {
+    foreignKey: "groupUuid"
+});
+
+GroupAdmin.belongsTo(User, {
+    foreignKey: "userUuid"
+});
+
+export default GroupAdmin;

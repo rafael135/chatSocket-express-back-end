@@ -1,5 +1,7 @@
 import { Model, DataTypes } from "sequelize";
 import { mariaDb as sequelize } from "../Instances/MariaDB";
+import Group from "./Group";
+import { User } from "./User";
 
 export interface GroupRelationInstance extends Model {
     uuid: string;
@@ -9,7 +11,7 @@ export interface GroupRelationInstance extends Model {
     updatedAt: string;
 }
 
-export const GroupRelation = sequelize.define<GroupRelationInstance>("GroupRelation", {
+const GroupRelation = sequelize.define<GroupRelationInstance>("GroupRelation", {
     uuid: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -33,3 +35,14 @@ export const GroupRelation = sequelize.define<GroupRelationInstance>("GroupRelat
 }, {
     timestamps: true
 });
+
+GroupRelation.belongsTo(Group, {
+    foreignKey: "groupUuid"
+});
+
+GroupRelation.hasOne(User, {
+    foreignKey: "id",
+    sourceKey: "userUuid"
+});
+
+export default GroupRelation;

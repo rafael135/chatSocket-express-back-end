@@ -1,13 +1,13 @@
-import { Group, GroupInstance } from "../Models/Group";
-import { GroupAdmin } from "../Models/GroupAdmin";
-import { GroupInvitation } from "../Models/GroupInvitation";
-import { GroupRelation } from "../Models/GroupRelation";
+import Group, { GroupInstance } from "../Models/Group";
+import GroupAdmin from "../Models/GroupAdmin";
+import { GroupInvitation, GroupInvitationInstance } from "../Models/GroupInvitation";
+import GroupRelation from "../Models/GroupRelation";
 import { User, UserInstance } from "../Models/User";
 
 
 
 class GroupService {
-    public async newGroup(name: string, userUuid: string) {
+    public async newGroup(name: string, userUuid: string): Promise<GroupInstance | null> {
         let newGroup: GroupInstance | null = null;
 
         try {
@@ -33,7 +33,7 @@ class GroupService {
         return newGroup
     }
 
-    public async inviteUserToGroup(groupUuid: string, userUuid: string) {
+    public async inviteUserToGroup(groupUuid: string, userUuid: string): Promise<GroupInvitationInstance | null> {
         let isMember = await GroupRelation.findOne({
             where: {
                 groupUuid: groupUuid,
@@ -53,7 +53,7 @@ class GroupService {
         return newInvitation;
     }
 
-    public async getGroupMembers(groupUuid: string) {
+    public async getGroupMembers(groupUuid: string): Promise<UserInstance[]> {
         let members = await GroupRelation.findAll({
             where: {
                 groupUuid: groupUuid
@@ -90,7 +90,7 @@ class GroupService {
         return users;        
     }
 
-    public async removeMemberFromGroup(groupUuid: string, memberUuid: string) {
+    public async removeMemberFromGroup(groupUuid: string, memberUuid: string): Promise<boolean> {
         let isAdmin = await GroupAdmin.findOne({
             where: {
                 groupUuid: groupUuid,

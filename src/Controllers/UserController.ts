@@ -4,8 +4,8 @@ import FriendService from "../Services/FriendService";
 import UserService from "../Services/UserService";
 import { GET, POST, PUT, before, route } from "awilix-express";
 import checkToken from "../Middlewares/Auth";
-import { Group, GroupInstance } from "../Models/Group";
-import { GroupRelation } from "../Models/GroupRelation";
+import Group, { GroupInstance } from "../Models/Group";
+import GroupRelation from "../Models/GroupRelation";
 import AuthService from "../Services/AuthService";
 
 
