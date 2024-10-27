@@ -164,8 +164,15 @@ class WebSocket {
         socket.emit("new_private_msg", msg);
     }
     
-    // Facade:
-    public async InitializeSocket() {
+    
+    /**
+     * Initializes the main event of the socket
+     *
+     * @public
+     * @async
+     * @returns {void}
+     */
+    public async InitializeSocket(): Promise<void> {
         this.io.on("connection", async (socket) => {
             let user = await this.onConnect(socket);
             
