@@ -1,17 +1,16 @@
-import fs from "node:fs/promises"
+import ImageProcessor from "./ImageProcessor";
 
 
-
-export class ImageService {
+// Template Method
+// Classe que implementa a lógica de conversão
+export class ImageService extends ImageProcessor {
 
     constructor() {
-
+        super();
     }
 
-    protected async convertFileToBase64(path: string): Promise<string> {
-        let fileBase64 = await fs.readFile(path, { encoding: "base64url" });
-
-        return fileBase64;
+    protected convertToBase64(fileContent: Buffer): string {
+        // Usando base64url ao invés de base64, mantendo a mesma lógica do código original
+        return fileContent.toString("base64url");
     }
-
 }
