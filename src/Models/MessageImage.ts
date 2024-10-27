@@ -1,12 +1,9 @@
 import { DataTypes, Model } from "sequelize";
 import { mariaDb as sequelize } from "../Instances/MariaDB";
+import IImage from "./Interfaces/IImage";
 
-export interface MessageImageInstance extends Model {
-    uuid: string;
+export interface MessageImageInstance extends IImage, Model {
     nextImageUuid: string | null;
-    path: string;
-    createdAt: string;
-    updatedAt: string;
 }
 
 export const MessageImage = sequelize.define<MessageImageInstance>("MessageImage", {

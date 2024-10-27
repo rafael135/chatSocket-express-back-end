@@ -11,6 +11,8 @@ import GroupService from "../Services/GroupService";
 import { ImageService } from "../Services/ImageService";
 import { StickService } from "../Services/StickService";
 import UserGroupFacade from "../Facades/UserGroupFacade";
+import UserRelationFacade from "../Facades/UserRelationFacade";
+import ConcreteMessageFactory from "../Factorys/ConcreteMessageFactory";
 
 
 /*
@@ -32,12 +34,15 @@ export const loadContainer = (server: Application) => {
         tokenService: asClass(TokenService).scoped(),
         authService: asClass(AuthService).scoped(),
         friendService: asClass(FriendService).scoped(),
+        userRelationFacade: asClass(UserRelationFacade).scoped(),
         groupService: asClass(GroupService).scoped(),
         userService: asClass(UserService).scoped(),
         userGroupFacade: asClass(UserGroupFacade).scoped(),
         stickService: asClass(StickService).scoped(),
         messageImageService: asClass(MessageImageService).scoped(),
-        messageService: asClass(MessageService).scoped()
+        messageService: asClass(MessageService).scoped(),
+
+        concreteMessageFactory: asClass(ConcreteMessageFactory).singleton()
     });
 
     server.use(scopePerRequest(Container));

@@ -10,5 +10,9 @@ export class StickService {
         this._imageService = imageService;
     }
 
+    public async getStickById() {
+        
+    }
+
     
 }

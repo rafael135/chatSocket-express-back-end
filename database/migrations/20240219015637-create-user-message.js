@@ -16,7 +16,7 @@ module.exports = {
         type: UUID,
         allowNull: false
       },
-      toUserUuid: {
+      toUuid: {
         type: UUID,
         allowNull: false
       },

@@ -1,19 +1,8 @@
 import { Op } from "sequelize";
 import { User, UserInstance } from "../Models/User";
 import UserRelation from "../Models/UserRelation";
+import { UserFriend } from "../Types/UserRelationResponse";
 
-
-type UserFriend = {
-    uuid: string;
-    isFriend?: boolean;
-    isPending?: boolean;
-    avatarSrc?: string;
-    name: string;
-    nickName: string;
-    email: string;
-    createdAt: string;
-    updatedAt: string;
-};
 
 class FriendService {
     public async usersToUserFriends(users: UserInstance[], loggedUserUuid?: string) {

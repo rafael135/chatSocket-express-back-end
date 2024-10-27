@@ -127,12 +127,12 @@ class WebSocket {
             imgs: newMsg.imgs,
             type: newMsg.type,
             to: "group",
-            toUuid: newMsg.toGroupUuid,
+            toUuid: newMsg.toUuid,
             time: newMsg.createdAt
         };
 
         socket.in(msgData.groupUuid).emit("new_group_msg", msg);
-        socket.emit("new_group_msg", msg);
+        //socket.emit("new_group_msg", msg);
     }
 
     private async onUserGroupLeave(socket: Socket, groupUuid: string) {

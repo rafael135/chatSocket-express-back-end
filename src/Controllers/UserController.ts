@@ -7,6 +7,8 @@ import checkToken from "../Middlewares/Auth";
 import Group, { GroupInstance } from "../Models/Group";
 import GroupRelation from "../Models/GroupRelation";
 import AuthService from "../Services/AuthService";
+import UserRelationFacade from "../Facades/UserRelationFacade";
+import { FriendRelationResponse, FriendResponse } from "../Types/UserRelationResponse";
 
 
 @route("/api/user")
@@ -14,11 +16,13 @@ class UserController {
     private readonly _authService: AuthService;
     private readonly _friendService: FriendService;
     private readonly _userService: UserService;
+    private readonly _userRelationFacade: UserRelationFacade;
 
-    constructor(authService: AuthService, friendService: FriendService, userService: UserService) {
+    constructor(authService: AuthService, friendService: FriendService, userService: UserService, userRelationFacade: UserRelationFacade) {
         this._authService = authService;
         this._friendService = friendService;
         this._userService = userService;
+        this._userRelationFacade = userRelationFacade;
     }
     
     @route("/change/avatar")
@@ -232,56 +236,30 @@ class UserController {
 
         let authCookie = req.cookies.auth_session as string;
 
-        let loggedUser = await this._authService.getLoggedUser(authCookie);
+        // Facade:
+        let response = await this._userRelationFacade.addFriend(authCookie, userUuid);
 
-        if(loggedUser == null) {
-            res.status(401);
+        if(response.status == 401) {
+            res.status(400);
             return res.send({
                 status: 401
             });
         }
 
-        let friendRelation = await this._friendService.addOrRemoveFriend(loggedUser.uuid, userUuid);
-
-
-
-        if(friendRelation.isFriend == false && friendRelation.isPending == true) {
+        if(response.status == 200) {
             res.status(200);
             return res.send({
                 friend: {
-                    isPending: true,
-                    isfriend: false
+                    isPending: (response.friend as FriendRelationResponse).isPending,
+                    isFriend: (response.friend as FriendRelationResponse).isfriend
                 },
                 status: 200
-            });
-        } else if(friendRelation.isFriend == false && friendRelation.isPending == false) {
-            res.status(200);
-            return res.send({
-                friend: {
-                    isPending: false,
-                    isfriend: false
-                },
-                status: 200
-            });
+            })
         }
-
-        let friend = (await User.findOne({
-            where: {
-                uuid: friendRelation.friend!.toUserUuid
-            }
-        }))!;
 
         res.status(201);
         return res.send({
-            friend: {
-                uuid: friend.uuid,
-                isFriend: true,
-                isPending: friendRelation?.isPending,
-                avatarSrc: friend.avatarSrc,
-                name: friend.name,
-                nickName: friend.nickName,
-                email: friend.email
-            },
+            friend: (response.friend as FriendResponse),
             status: 201
         });
     }
@@ -299,11 +277,20 @@ class UserController {
             });
         }
 
-        let pendingFriends = await this._friendService.getPendingFriends(userUuid);
+        let authCookie = req.cookies.auth_session as string;
+
+        let response = await this._userRelationFacade.getPendingFriends(authCookie);
+
+        if(response.status == 401) {
+            res.status(401);
+            return res.send({
+                status: 401
+            });
+        }
 
         res.status(200);
         return res.send({
-            pendingFriends: pendingFriends,
+            pendingFriends: response.pendingFriends!,
             status: 200
         });
     }
@@ -346,169 +333,3 @@ class UserController {
 }
 
 export default UserController;
-
-
-
-/* export const changeAvatar = async (req: Request, res: Response) => {
-    const { filePath }: { filePath: string | null } = req.body;
-
-    if (filePath == null) {
-        res.status(400);
-        return res.send({
-            status: 400
-        });
-    }
-
-    let authCookie = req.cookies.auth_session as string | null;
-
-    let loggedUser = await AuthController.checkCookie(authCookie);
-
-    if (loggedUser == false) {
-        res.status(401);
-        return res.send({
-            status: 401
-        });
-    }
-
-    loggedUser.avatarSrc = filePath;
-    await loggedUser.save();
-
-    res.status(201);
-    return res.send({
-        status: 201
-    });
-}
-
-export const changeName = async (req: Request, res: Response) => {
-    const { newName }: { newName: string | null } = req.body;
-
-    //console.log(newName);
-
-    if (newName == null) {
-        res.status(400);
-        return res.send({
-            status: 400
-        });
-    }
-
-    let authCookie = req.cookies.auth_session as string | null;
-
-    let loggedUser = await AuthController.checkCookie(authCookie);
-
-    if (loggedUser == false) {
-        res.status(401);
-        return res.send({
-            status: 401
-        });
-    }
-
-    loggedUser.name = newName;
-
-    try {
-        await loggedUser.save();
-    } catch (err) {
-        console.error(err);
-        res.status(500);
-        return res.send({
-            status: 500
-        });
-    }
-
-    res.status(200);
-    return res.send({
-        status: 200
-    });
-}
-
-export const getUserFriends = async (req: Request, res: Response) => {
-    let { userUuid } = req.params;
-
-    if (userUuid == null) {
-        res.status(400);
-        return res.send({
-            status: 400
-        });
-    }
-
-    let authCookie = req.cookies.auth_session as string | null;
-
-    let loggedUser = await AuthController.checkCookie(authCookie);
-
-    if (loggedUser == false) {
-        res.status(401);
-        return res.send({
-            status: 401
-        });
-    }
-
-
-    let userFriends: UserRelationInstance[] = await UserRelation.findAll({
-        where: {
-            [Op.or]: {
-                fromUserUuid: userUuid,
-                toUserUuid: userUuid
-            }
-        }
-    });
-
-    let friends: UserInstance[] = [];
-
-    await new Promise<void>((resolve) => {
-        let count = 0;
-
-        userFriends.forEach(async (friend) => {
-            let user = (await User.findOne({
-                where: {
-                    uuid: (friend.fromUserUuid != userUuid) ? friend.fromUserUuid : friend.toUserUuid
-                }
-            }))!;
-
-            user.password = undefined;
-            user.id = undefined;
-
-            friends.push(user);
-            count++;
-
-            if (count == userFriends.length) { resolve(); }
-        });
-
-        if (count == userFriends.length) { resolve(); }
-    });
-
-
-    res.status(200);
-    return res.send({
-        userFriends: friends,
-        status: 200
-    });
-}
-
-
-export const searchFriends = async (req: Request, res: Response) => {
-    let { searchName } = req.query as { searchName: string | null };
-
-    if (searchName == null) {
-        res.status(400);
-        return res.send({
-            status: 400
-        });
-    }
-
-
-    let users = (await User.findAll({
-        where: {
-            nickName: {
-                [Op.like]: `${searchName}%`
-            }
-        }
-    })).map((usr, idx) => {
-        usr.password = undefined;
-        return usr;
-    });
-
-    res.status(200);
-    return res.send({
-        users: users,
-        status: 200
-    });
-} */

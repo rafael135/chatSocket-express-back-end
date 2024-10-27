@@ -1,12 +1,11 @@
 import { DataTypes, Model } from "sequelize";
 import { mariaDb as sequelize } from "../Instances/MariaDB";
 import { User } from "./User";
+import { MessageImageInstance } from "./MessageImage";
+import IImage from "./Interfaces/IImage";
 
-export interface Stick extends Model {
-    uuid: string;
-    path: string;
-    createdAt: string;
-    updatedAt: string;
+export interface Stick extends IImage, Model {
+    userUuid: string;
 }
 
 const Stick = sequelize.define<Stick>("Stick", {

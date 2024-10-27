@@ -5,12 +5,13 @@ import { User, UserInstance } from "../Models/User";
 import UserMessage, { UserMessageInstance } from "../Models/UserMessage";
 import MessageImageService from "./MessageImageService";
 import { MessageImageType, MessageType, onUserGroupMsgType, onUserPrivateMsgType } from "./WebSocket";
+import ConcreteMessageFactory from "../Factorys/ConcreteMessageFactory";
 
 
 type MessageObjectType = {
     uuid: string;
     fromUserUuid: string;
-    toGroupUuid: string;
+    toUuid: string;
     imageUuid: string | null;
     type: "new-user" | "exit-user" | "msg" | "img" | "error";
     body: string;
@@ -20,9 +21,11 @@ type MessageObjectType = {
 }
 class MessageService {
     private readonly _messageImageService: MessageImageService;
+    private readonly _concreteMessageFactory: ConcreteMessageFactory;
 
-    constructor(messageImageService: MessageImageService) {
+    constructor(messageImageService: MessageImageService, concreteMessageFactory: ConcreteMessageFactory) {
         this._messageImageService = messageImageService;
+        this._concreteMessageFactory = concreteMessageFactory;
     }
 
     public async saveGroupMessage(author: UserInstance, msgData: onUserGroupMsgType): Promise<MessageObjectType | null> {
@@ -36,20 +39,22 @@ class MessageService {
             socketImgs = await this._messageImageService.messageImagesToSocketImages(author, messageImages);
         }
 
-        let message = await GroupMessage.create({
-            fromUserUuid: author.uuid,
-            toGroupUuid: msgData.groupUuid,
-            imageUuid: (messageImages.length > 0) ? messageImages[0].uuid : null,
-            type: msgData.type,
-            body: msgData.msg
-        });
+
+        // Abstract Factory:
+        let message = await this._concreteMessageFactory.createGroupMessage(
+            author.uuid,
+            msgData.groupUuid,
+            msgData.msg,
+            msgData.type,
+            (messageImages.length > 0) ? messageImages[0].uuid : null,
+        );
 
         //message.imgs = socketImgs;
 
         let messageObject: MessageObjectType = {
             uuid: message.uuid,
             fromUserUuid: message.fromUserUuid,
-            toGroupUuid: message.toGroupUuid,
+            toUuid: message.toUuid,
             imageUuid: message.imageUuid,
             type: message.type,
             body: message.body,
@@ -71,14 +76,15 @@ class MessageService {
             messageImages = await this._messageImageService.createMessageImages(imgs);
             socketImgs = await this._messageImageService.messageImagesToSocketImages(author, messageImages);
         }
-
-        let message = await UserMessage.create({
-            fromUserUuid: author.uuid,
-            toUserUuid: msgData.userUuid,
-            imageUuid: (messageImages.length > 0) ? messageImages[0].uuid : null,
-            type: msgData.type,
-            body: msgData.msg
-        });
+        
+        // Abstract Factory:
+        let message = await this._concreteMessageFactory.createUserMessage(
+            author.uuid,
+            msgData.userUuid,
+            msgData.msg,
+            msgData.type,
+            (messageImages.length > 0) ? messageImages[0].uuid : null,
+        )
 
         message.imgs = socketImgs;
 
@@ -107,7 +113,7 @@ class MessageService {
             where: {
                 [Op.or]: [
                     { fromUserUuid: userUuid },
-                    { toUserUuid: userUuid }
+                    { toUuid: userUuid }
                 ]
             },
             order: [
@@ -137,7 +143,7 @@ class MessageService {
                     msg: msg.body,
                     imgs: imgs,
                     to: "user",
-                    toUuid: msg.toUserUuid,
+                    toUuid: msg.toUuid,
                     time: msg.createdAt
                 });
 
@@ -186,7 +192,7 @@ class MessageService {
                     msg: msg.body,
                     imgs: imgs,
                     to: "group",
-                    toUuid: msg.toGroupUuid,
+                    toUuid: msg.toUuid,
                     time: msg.createdAt
                 });
 

@@ -2,19 +2,11 @@ import { DataTypes, Model } from "sequelize";
 import { mariaDb as sequelize } from "../Instances/MariaDB";
 import { User, UserInstance } from "./User";
 import { MessageImageType } from "../Services/WebSocket";
+import IMessage from "./Interfaces/IMessage";
 
 
-export interface UserMessageInstance extends Model {
-    uuid: string;
-    fromUserUuid: string;
+export interface UserMessageInstance extends Model, IMessage {
     user?: UserInstance;
-    toUserUuid: string;
-    imageUuid: string;
-    imgs: MessageImageType[];
-    type: "new-user" | "exit-user" | "msg" | "img" | "error";
-    body: string;
-    createdAt: string;
-    updatedAt: string;
 }
 
 const UserMessage = sequelize.define<UserMessageInstance>("UserMessage", {
@@ -28,7 +20,7 @@ const UserMessage = sequelize.define<UserMessageInstance>("UserMessage", {
         type: DataTypes.UUID,
         allowNull: false
     },
-    toUserUuid: {
+    toUuid: {
         type: DataTypes.UUID,
         allowNull: false
     },
@@ -61,7 +53,7 @@ UserMessage.belongsTo(User, {
 
 UserMessage.hasOne(User, {
     foreignKey: "id",
-    sourceKey: "toUserUuid"
+    sourceKey: "toUuid"
 })
 
 export default UserMessage;

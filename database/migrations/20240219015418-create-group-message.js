@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false
       },
-      toGroupUuid: {
+      toUuid: {
         type: Sequelize.UUID,
         allowNull: false
       },

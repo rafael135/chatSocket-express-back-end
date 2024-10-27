@@ -22,10 +22,18 @@ export class StickController {
 
 
     @route("/")
+    @GET()
+    @before(checkToken)
+    public async getUserStickers(req: Request, res: Response) {
+        let authCookie = req.cookies.auth_session as string | null;
+    }
+
+
+    @route("/")
     @POST()
     @before(checkToken)
     public async saveImageAsSticker(req: Request, res: Response) {
-
+        let authCookie = req.cookies.auth_session as string | null;
     }
 
     @route("/:stickUuid")

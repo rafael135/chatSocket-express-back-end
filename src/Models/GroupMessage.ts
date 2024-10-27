@@ -3,18 +3,10 @@ import { mariaDb as sequelize } from "../Instances/MariaDB";
 import { User, UserInstance } from "./User";
 import { MessageImageType } from "../Services/WebSocket";
 import Group from "./Group";
+import IMessage from "./Interfaces/IMessage";
 
-export interface GroupMessageInstance extends Model {
-    uuid: string;
-    fromUserUuid: string;
+export interface GroupMessageInstance extends Model, IMessage {
     user: UserInstance;
-    toGroupUuid: string;
-    imageUuid: string | null;
-    imgs: MessageImageType[];
-    type: "new-user" | "exit-user" | "msg" | "img" | "error";
-    body: string;
-    createdAt: string;
-    updatedAt: string;
 }
 
 const GroupMessage = sequelize.define<GroupMessageInstance>("GroupMessage", {
@@ -28,7 +20,7 @@ const GroupMessage = sequelize.define<GroupMessageInstance>("GroupMessage", {
         type: DataTypes.UUID,
         allowNull: false
     },
-    toGroupUuid: {
+    toUuid: {
         type: DataTypes.UUID,
         allowNull: false
     },
@@ -58,7 +50,7 @@ GroupMessage.belongsTo(User, {
 });
 
 GroupMessage.belongsTo(Group, {
-    foreignKey: "toGroupUuid"
+    foreignKey: "toUuid"
 });
 
 export default GroupMessage;
