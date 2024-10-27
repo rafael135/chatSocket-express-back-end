@@ -12,7 +12,7 @@ import { ImageService } from "../Services/ImageService";
 import { StickService } from "../Services/StickService";
 import UserGroupFacade from "../Facades/UserGroupFacade";
 import UserRelationFacade from "../Facades/UserRelationFacade";
-import ConcreteMessageFactory from "../Factorys/ConcreteMessageFactory";
+import ConcreteMessageFactory from "../Factories/ConcreteMessageFactory";
 
 
 /*

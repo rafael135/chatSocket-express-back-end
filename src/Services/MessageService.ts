@@ -5,7 +5,7 @@ import { User, UserInstance } from "../Models/User";
 import UserMessage, { UserMessageInstance } from "../Models/UserMessage";
 import MessageImageService from "./MessageImageService";
 import { MessageImageType, MessageType, onUserGroupMsgType, onUserPrivateMsgType } from "./WebSocket";
-import ConcreteMessageFactory from "../Factorys/ConcreteMessageFactory";
+import ConcreteMessageFactory from "../Factories/ConcreteMessageFactory";
 
 
 type MessageObjectType = {
