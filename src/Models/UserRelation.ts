@@ -37,7 +37,7 @@ UserRelation.belongsTo(User, {
 });
 
 UserRelation.hasOne(User, {
-    foreignKey: "id",
+    foreignKey: "uuid",
     sourceKey: "toUserUuid"
 });
 

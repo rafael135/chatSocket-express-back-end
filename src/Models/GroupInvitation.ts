@@ -38,7 +38,7 @@ GroupInvitation.belongsTo(Group, {
 });
 
 GroupInvitation.hasOne(User, {
-    foreignKey: "id",
+    foreignKey: "uuid",
     sourceKey: "userUuid"
 });
 

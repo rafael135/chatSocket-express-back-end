@@ -41,7 +41,7 @@ GroupRelation.belongsTo(Group, {
 });
 
 GroupRelation.hasOne(User, {
-    foreignKey: "id",
+    foreignKey: "uuid",
     sourceKey: "userUuid"
 });
 

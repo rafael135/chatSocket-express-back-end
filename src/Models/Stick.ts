@@ -29,7 +29,7 @@ const Stick = sequelize.define<Stick>("Stick", {
 });
 
 Stick.belongsTo(User, {
-    targetKey: "id",
+    targetKey: "uuid",
     foreignKey: "userUuid"
 });
 

@@ -48,11 +48,11 @@ const UserMessage = sequelize.define<UserMessageInstance>("UserMessage", {
 
 UserMessage.belongsTo(User, {
     foreignKey: "fromUserUuid",
-    targetKey: "id"
+    targetKey: "uuid"
 });
 
 UserMessage.hasOne(User, {
-    foreignKey: "id",
+    foreignKey: "uuid",
     sourceKey: "toUuid"
 })
 
