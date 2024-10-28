@@ -2,7 +2,6 @@ import { Model, DataTypes } from "sequelize";
 import { mariaDb as sequelize } from "../Instances/MariaDB";
 
 export interface UserInstance extends Model {
-    id: number | undefined;
     uuid: string;
     name: string;
     nickName: string;
@@ -14,11 +13,6 @@ export interface UserInstance extends Model {
 }
 
 export const User = sequelize.define<UserInstance>("User", {
-    id: {
-        primaryKey: true,
-        autoIncrement: true,
-        type: DataTypes.INTEGER
-    },
     uuid: {
         type: DataTypes.UUID,
         allowNull: false,

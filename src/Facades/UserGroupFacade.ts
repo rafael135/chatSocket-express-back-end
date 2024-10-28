@@ -1,3 +1,4 @@
+import { GroupInstance } from "../Models/Group";
 import AuthService from "../Services/AuthService";
 import GroupService from "../Services/GroupService";
 
@@ -9,6 +10,31 @@ class UserGroupFacade {
     constructor(authService: AuthService, groupService: GroupService) {
         this._authService = authService;
         this._groupService = groupService;
+    }
+
+    public async createGroup(authCookie: string, groupName: string): Promise<{ status: number, group?: GroupInstance }> {
+        let loggedUser = await this._authService.getLoggedUser(authCookie)
+
+        if(loggedUser == null) {
+            return {
+                status: 401
+            };
+        }
+
+        let createdGroup = await this._groupService.newGroup(groupName, loggedUser.uuid);
+
+        if(createdGroup == null) {
+            return {
+                status: 500
+            };
+        }
+
+        return {
+            group: createdGroup,
+            status: 201
+        };
+
+
     }
 
     public async removeUserFromGroup(authCookie: string, groupIds: string[] | null): Promise<{ status: number }> {

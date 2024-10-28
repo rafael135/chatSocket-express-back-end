@@ -45,30 +45,23 @@ class GroupController {
     @POST()
     @before(checkToken)
     public async createNewGroup(req: Request, res: Response) {
-        let { groupName, userUuid } = req.body;
+        let { groupName } = req.body as { groupName: string | null };
 
-        if (groupName == null || userUuid == null) {
+        if (groupName == null) {
             res.status(400);
             return res.send({
                 status: 400
             });
         }
 
-        let user = await User.findOne({ where: { uuid: userUuid } });
+        let authCookie = req.cookies.auth_session as string;
 
-        if (user == null) {
-            res.status(401);
-            return res.send({
-                status: 401
-            });
-        }
+        let response = await this._userGroupFacade.createGroup(authCookie, groupName);
 
-        let newGroup = await this._groupService.newGroup(groupName, userUuid);
-
-        if(newGroup != null) {
+        if(response.status == 201) {
             res.status(201);
             return res.send({
-                group: newGroup,
+                group: response.group!,
                 status: 201
             });
         } else {

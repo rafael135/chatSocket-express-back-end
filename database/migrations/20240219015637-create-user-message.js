@@ -14,11 +14,23 @@ module.exports = {
       },
       fromUserUuid: {
         type: UUID,
-        allowNull: false
+        allowNull: false,
+        references: {
+          model: "Users",
+          key: "uuid"
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL"
       },
       toUuid: {
         type: UUID,
-        allowNull: false
+        allowNull: false,
+        references: {
+          model: "Users",
+          key: "uuid"
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL"
       },
       imageUuid: {
         type: UUID,
@@ -29,7 +41,7 @@ module.exports = {
         allowNull: false
       },
       body: {
-        type: TEXT("tiny"),
+        type: TEXT,
         allowNull: false
       },
       createdAt: {

@@ -11,11 +11,19 @@ module.exports = {
       },
       groupUuid: {
         allowNull: false,
-        type: Sequelize.UUID
+        type: Sequelize.UUID,
+        references: {
+          model: "Groups",
+          key: "uuid"
+        }
       },
       userUuid: {
         allowNull: false,
-        type: Sequelize.UUID
+        type: Sequelize.UUID,
+        references: {
+          model: "Users",
+          key: "uuid"
+        }
       },
       createdAt: {
         allowNull: false,

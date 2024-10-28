@@ -11,11 +11,21 @@ module.exports = {
       },
       fromUserUuid: {
         type: Sequelize.UUID,
-        allowNull: false
+        allowNull: false,
+        references: {
+          model: "Users",
+          key: "uuid"
+        }
       },
       toUuid: {
         type: Sequelize.UUID,
-        allowNull: false
+        allowNull: false,
+        references: {
+          model: "Groups",
+          key: "uuid",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
       },
       imageUuid: {
         type: Sequelize.UUID,
@@ -26,7 +36,7 @@ module.exports = {
         allowNull: false
       },
       body: {
-        type: Sequelize.TEXT("medium"),
+        type: Sequelize.TEXT,
         allowNull: false
       },
       createdAt: {

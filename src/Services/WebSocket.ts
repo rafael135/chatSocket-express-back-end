@@ -45,7 +45,7 @@ class WebSocket {
     
 
     io: Server;
-    connectedUsers: number[] = [];
+    connectedUsers: string[] = [];
 
     constructor(server: Server, tokenService: TokenService, authService: AuthService, messageService: MessageService) {
         this.io = server;
@@ -99,7 +99,7 @@ class WebSocket {
             return null;
         }
 
-        this.connectedUsers.push(user.id!);
+        this.connectedUsers.push(user.uuid!);
 
         user.password = undefined;
 
@@ -212,7 +212,7 @@ class WebSocket {
             socket.on("disconnect", () => {
                 if(socket.data.user == undefined || socket.data.user.id == undefined) { return; }
 
-                let id = (socket.data as SocketDataType).user.id!;
+                let id = (socket.data as SocketDataType).user.uuid!;
 
                 this.connectedUsers.filter(usrId => usrId != id);
                 

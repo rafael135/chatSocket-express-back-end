@@ -11,11 +11,19 @@ module.exports = {
       },
       fromUserUuid: {
         type: Sequelize.UUID,
-        allowNull: false
+        allowNull: false,
+        references: {
+          model: "Users",
+          key: "uuid"
+        }
       },
       toUserUuid: {
         type: Sequelize.UUID,
-        allowNull: false
+        allowNull: false,
+        references: {
+          model: "Users",
+          key: "uuid"
+        }
       },
       createdAt: {
         allowNull: false,
