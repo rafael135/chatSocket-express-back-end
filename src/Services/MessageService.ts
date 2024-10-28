@@ -129,7 +129,6 @@ class MessageService {
             userMessages.forEach(async (msg) => {
                 let author = (await User.findOne({ where: { uuid: msg.fromUserUuid } }))!;
                 author.password = undefined;
-                author.id = undefined;
 
                 let imgs: MessageImageType[] = [];
 
@@ -178,7 +177,6 @@ class MessageService {
             groupMessages.forEach(async (msg) => {
                 let author = (await User.findOne({ where: { uuid: msg.fromUserUuid } }))!;
                 author.password = undefined;
-                author.id = undefined;
 
                 let imgs: MessageImageType[] = [];
 

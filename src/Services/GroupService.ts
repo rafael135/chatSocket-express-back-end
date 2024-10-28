@@ -74,7 +74,6 @@ class GroupService {
                 });
 
                 if(user != null) {
-                    user.id = undefined;
                     user.password = undefined;
 
                     users.push(user);
