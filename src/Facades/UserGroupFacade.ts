@@ -1,4 +1,6 @@
 import { GroupInstance } from "../Models/Group";
+import GroupAdmin from "../Models/GroupAdmin";
+import { GroupInvitationInstance } from "../Models/GroupInvitation";
 import AuthService from "../Services/AuthService";
 import GroupService from "../Services/GroupService";
 
@@ -35,6 +37,57 @@ class UserGroupFacade {
         };
 
 
+    }
+
+    public async inviteUserToGroup(authCookie: string, userUuid: string, groupUuid: string): Promise<{ status: number, groupInvitation?: GroupInvitationInstance }> {
+        const loggedUser = await this._authService.getLoggedUser(authCookie);
+
+        if(loggedUser == null) {
+            return { status: 403 };
+        }
+
+        const invitation = await this._groupService.inviteUserToGroup(groupUuid, userUuid);
+
+        if(invitation == null) {
+            return {
+                status: 400
+            };
+        }
+
+        return {
+            status: 201,
+            groupInvitation: invitation
+        };
+    }
+
+    public async isUserGroupAdmin(authCookie: string, userUuid: string, groupUuid: string): Promise<{ status: number, isAdmin: boolean }> {
+        let loggedUser = await this._authService.getLoggedUser(authCookie);
+
+        if(loggedUser == null) {
+            return {
+                isAdmin: false,
+                status: 403
+            };
+        }
+
+        let groupAdmin = await GroupAdmin.findOne({
+            where: {
+                groupUuid: groupUuid,
+                userUuid: userUuid
+            }
+        });
+
+        if(groupAdmin == null) {
+            return {
+                isAdmin: false,
+                status: 200
+            };
+        }
+
+        return {
+            isAdmin: true,
+            status: 200
+        };
     }
 
     public async removeUserFromGroup(authCookie: string, groupIds: string[] | null): Promise<{ status: number }> {

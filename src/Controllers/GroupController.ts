@@ -86,9 +86,11 @@ class GroupController {
             });
         }
 
-        let invitation = await this._groupService.inviteUserToGroup(groupUuid, userUuid);
+        let authCookie = req.cookies.auth_session as string;
 
-        if(invitation == null) {
+        let invitationResponse = await this._userGroupFacade.inviteUserToGroup(authCookie, userUuid, groupUuid);
+
+        if(invitationResponse.status == 400) {
             res.status(400);
             return res.send({
                 status: 400
@@ -96,10 +98,7 @@ class GroupController {
         }
 
         res.status(201);
-        return res.send({
-            groupInvitation: invitation,
-            status: 201
-        });
+        return res.send(invitationResponse);
     }
 
     @route("/:groupUuid/exit")
@@ -165,42 +164,21 @@ class GroupController {
     @GET()
     @before(checkToken)
     public async isUserGroupAdmin(req: Request, res: Response) {
-        let authCookie = req.cookies.auth_session as string;
-
-        let loggedUser = await this._authService.getLoggedUser(authCookie);
-
-        if(loggedUser == null) {
-            res.status(403);
-            return res.send({
-                isAdmin: false,
-                status: 403
-            });
-        }
-
         let { userUuid, groupUuid } = req.params as { userUuid: string | null, groupUuid: string | null };
 
-        console.log(userUuid, groupUuid);
-
-        let groupAdmin = await GroupAdmin.findOne({
-            where: {
-                groupUuid: groupUuid,
-                userUuid: userUuid
-            }
-        });
-
-        if(groupAdmin != null) {
-            res.status(200);
-            return res.send({
-                isAdmin: true,
-                status: 200
-            });
-        } else {
-            res.status(403);
+        if(userUuid == null || groupUuid == null) {
+            res.status(400);
             return res.send({
                 isAdmin: false,
-                status: 403
+                status: 400
             });
         }
+
+        let authCookie = req.cookies.auth_session as string;
+
+        let response = this._userGroupFacade.isUserGroupAdmin(authCookie, userUuid, groupUuid);
+
+        return res.send(response);
     }
 }
 
