@@ -1,9 +1,0 @@
-
-
-
-
-class ImageDecorator {
-    constructor() {
-        
-    }
-}

@@ -15,7 +15,8 @@ module.exports = {
         references: {
           model: "Groups",
           key: "uuid"
-        }
+        },
+        onDelete: "CASCADE"
       },
       userUuid: {
         type: Sequelize.UUID,
@@ -23,7 +24,8 @@ module.exports = {
         references: {
           model: "Users",
           key: "uuid",
-        }
+        },
+        onDelete: "CASCADE"
       },
       /*
       isAdmin: {

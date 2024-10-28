@@ -20,7 +20,7 @@ module.exports = {
           key: "uuid"
         },
         onUpdate: "CASCADE",
-        onDelete: "SET NULL"
+        onDelete: "CASCADE"
       },
       toUuid: {
         type: UUID,
@@ -30,7 +30,7 @@ module.exports = {
           key: "uuid"
         },
         onUpdate: "CASCADE",
-        onDelete: "SET NULL"
+        onDelete: "CASCADE"
       },
       imageUuid: {
         type: UUID,
@@ -41,7 +41,7 @@ module.exports = {
         allowNull: false
       },
       body: {
-        type: TEXT,
+        type: TEXT("medium"),
         allowNull: false
       },
       createdAt: {

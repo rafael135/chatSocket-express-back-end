@@ -31,12 +31,12 @@ module.exports = {
 
 module.exports = {
   development: {
-    username: "postgres",
+    username: "root",
     password: "3541",
     database: "chatWs",
     host: "localhost",
-    port: 5432,
-    dialect: "postgres"
+    port: 5306,
+    dialect: "mysql"
   },
   test: {
     username: "root",
